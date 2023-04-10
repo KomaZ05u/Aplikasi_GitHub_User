@@ -20,6 +20,26 @@ class Following : Fragment() {
 
     private lateinit var fragmentFollowBinding: FragmentFollowBinding
     private val _binding get() = fragmentFollowBinding
+    private var username: String? = null
+    
+    companion object {
+        private const val KEY_BUNDLE = "USERNAME"
+        
+        fun getInstance(username: String): Following {
+            return Following().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_BUNDLE, username)
+                }
+            }
+        }
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            username = it.getString(KEY_BUNDLE)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +66,7 @@ class Following : Fragment() {
     }
 
     private fun showViewModel() {
-        viewModel.following(UserDetailActivity.username)
+        username?.let { viewModel.following(it) }
         viewModel.userFollowing.observe(viewLifecycleOwner) { following ->
             if (following.size != 0) {
                 adapter.setData(following)
@@ -66,7 +86,7 @@ class Following : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.following(UserDetailActivity.username)
+        username?.let { viewModel.following(it) }
     }
 
     private fun showLoading(isLoading: Boolean) {

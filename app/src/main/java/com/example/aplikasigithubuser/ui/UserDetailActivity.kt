@@ -1,6 +1,5 @@
 package com.example.aplikasigithubuser.ui
 
-import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.aplikasigithubuser.viewmodel.MainViewModel
 import com.example.aplikasigithubuser.R
-import com.example.aplikasigithubuser.SectionsPagerAdapter
+import com.example.aplikasigithubuser.adapter.SectionsPagerAdapter
 import com.example.aplikasigithubuser.data.model.ResponseDetailUser
 import com.example.aplikasigithubuser.data.model.local.DatabaseContract
 import com.example.aplikasigithubuser.data.model.local.DatabaseContract.FavoriteColumns.Companion.TABLE_NAME
@@ -117,7 +116,8 @@ class UserDetailActivity : AppCompatActivity() {
         setContentView(userDetailActivityBinding.root)
 
         val id = intent.getIntExtra(EXTRA_ID, 0)
-        val sectionPageAdapter = SectionsPagerAdapter(this)
+        username = intent.getStringExtra(EXTRA_USER).toString()
+        val sectionPageAdapter = SectionsPagerAdapter(this, username)
         val viewPager: ViewPager2 = userDetailActivityBinding.viewPager
         viewPager.adapter = sectionPageAdapter
         val tabs: TabLayout = userDetailActivityBinding.tabs
@@ -125,7 +125,7 @@ class UserDetailActivity : AppCompatActivity() {
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
 
-        username = intent.getStringExtra(EXTRA_USER).toString()
+        
         showViewModel()
         viewModel.isLoading.observe(this, this::showLoading)
     }
